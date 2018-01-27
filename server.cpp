@@ -87,7 +87,9 @@ int main(int argc, char *argv[])
         cout << "Client: " << msg << endl;
         cout << ">";
         string data;
-        getline(cin, data);
+
+	str data = "temp response; continue";
+
         memset(&msg, 0, sizeof(msg)); //clear the buffer
         strcpy(msg, data.c_str());
         if(data == "exit")
