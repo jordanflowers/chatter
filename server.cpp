@@ -4,12 +4,10 @@
 #include <string.h>   //strlen 
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h> 
 #include <unistd.h>   //close 
 #include <arpa/inet.h>    //close 
 #include <sys/types.h> 
 #include <sys/socket.h> 
-#include <netinet/in.h> 
 #include <string>
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros 
 using namespace std;    
@@ -21,9 +19,19 @@ using namespace std;
 int main(int argc , char *argv[])  
 {  
     int opt = TRUE;  
-    int master_socket , addrlen , new_socket , client_socket[30] , 
-          max_clients = 30 , activity, i , valread , sd, numConnected, n;  
+    int master_socket;
+    int addrlen;
+    int new_socket;
+    int client_socket[30];
+    int max_clients = 30;
+    int activity;
+    int i;
+    int valread;
+    int sd;
+    int numConnected;
+    int n;  
     int max_sd;  
+
     struct sockaddr_in address;  
         
     char buffer[1025];  //data buffer of 1K 
@@ -31,7 +39,7 @@ int main(int argc , char *argv[])
     //set of socket descriptors 
     fd_set readfds;  
         
-    //a message 
+    // Hey don't worry about this. Its nuthin
     char *message = "";  
     
     //initialise all client_socket[] to 0 so not checked 
@@ -41,7 +49,7 @@ int main(int argc , char *argv[])
     }  
         
     //create a master socket 
-    if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)  
+    if((master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)  
     {  
         perror("socket failed");  
         exit(EXIT_FAILURE);  
@@ -61,7 +69,7 @@ int main(int argc , char *argv[])
     address.sin_addr.s_addr = INADDR_ANY;  
     address.sin_port = htons( PORT );  
         
-    //bind the socket to localhost port 8888 
+    //bind the socket to localhost
     if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)  
     {  
         perror("bind failed");  
@@ -182,14 +190,16 @@ int main(int argc , char *argv[])
                     buffer[valread+1] = '\0';
                     for (int i = 0; i < numConnected; i++)
                     {
-                        send(client_socket[i] , buffer, strlen(buffer) , 0 );  
-                        //cout << "Message sent" << endl;
+                        send(client_socket[i] , buffer, strlen(buffer) , 0 );
                     }
                     memset(buffer, 0, sizeof(buffer));
                 }  
             }  
         }  
     }  
+    close(master_socket);
+    for(i = 0; i < 30; i++)
+    	close(client_socket[i]);
         
     return 0;  
 }  
