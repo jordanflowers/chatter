@@ -21,7 +21,7 @@ int main(int argc , char *argv[])
 {  
     int opt = TRUE;  
     int master_socket , addrlen , new_socket , client_socket[30] , 
-          max_clients = 30 , activity, i , valread , sd;  
+          max_clients = 30 , activity, i , valread , sd, numConnected;  
     int max_sd;  
     struct sockaddr_in address;  
         
@@ -78,7 +78,7 @@ int main(int argc , char *argv[])
     //accept the incoming connection 
     addrlen = sizeof(address);  
     puts("Waiting for connections ...");  
-        
+    numConnected = 0;
     while(TRUE)  
     {  
         //clear the socket set 
@@ -106,7 +106,7 @@ int main(int argc , char *argv[])
         //wait for an activity on one of the sockets , timeout is NULL , 
         //so wait indefinitely 
         activity = select( max_sd + 1 , &readfds , NULL , NULL , NULL);  
-      
+        numConnected++;
         if ((activity < 0) && (errno!=EINTR))  
         {  
             printf("select error");  
@@ -125,7 +125,12 @@ int main(int argc , char *argv[])
             
             //inform user of socket number - used in send and receive commands 
             printf("New connection , socket fd is %d , ip is : %s , port : %d \n" , new_socket , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));  
-          
+            char *messageToAll = "A new player has entered the arena.";
+            for (i = 0; i < numConnected; i++)
+            {
+                send(client_socket[i], messageToAll, strlen(messageToAll), 0);
+            }
+
             //send new connection greeting message 
             if( send(new_socket, message, strlen(message), 0) != strlen(message) )  
             {  
@@ -133,7 +138,6 @@ int main(int argc , char *argv[])
             }  
                 
             puts("Welcome message sent successfully");  
-                
             //add new socket to array of sockets 
             for (i = 0; i < max_clients; i++)  
             {  
