@@ -23,7 +23,7 @@ void checkerThread()
     char recvedMessage[1500];
     while (1)
     {
-        recvedMessage[1500] = 0;
+        memset(recvedMessage, 0, sizeof(recvedMessage));
         recv(clientSd, (char*)&recvedMessage, sizeof(recvedMessage), 0);
         //cout << "Received from server..." << endl;
         if(!strcmp(recvedMessage, "exit"))

@@ -180,6 +180,7 @@ int main(int argc , char *argv[])
                         send(client_socket[i] , buffer , strlen(buffer) , 0 );  
                         //cout << "Message sent" << endl;
                     }
+                    memset(buffer, 0, sizeof(buffer));
                 }  
             }  
         }  
