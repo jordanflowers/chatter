@@ -1,9 +1,9 @@
 //Example code: A simple server side code, which echos back the received message.
 //Handle multiple socket connections with select and fd_set on Linux 
-#include <stdio.h> 
 #include <iostream>
 #include <string.h>   //strlen 
-#include <stdlib.h> 
+#include <stdio.h>
+#include <stdlib.h>
 #include <errno.h> 
 #include <unistd.h>   //close 
 #include <arpa/inet.h>    //close 
@@ -22,7 +22,7 @@ int main(int argc , char *argv[])
 {  
     int opt = TRUE;  
     int master_socket , addrlen , new_socket , client_socket[30] , 
-          max_clients = 30 , activity, i , valread , sd, numConnected;  
+          max_clients = 30 , activity, i , valread , sd, numConnected, n;  
     int max_sd;  
     struct sockaddr_in address;  
         
@@ -151,7 +151,6 @@ int main(int argc , char *argv[])
         for (i = 0; i < max_clients; i++)  
         {  
             sd = client_socket[i];  
-                
             if (FD_ISSET( sd , &readfds))  
             {  
                 //Check if it was for closing , and also read the 
@@ -174,10 +173,16 @@ int main(int argc , char *argv[])
                 {  
                     //set the string terminating NULL byte on the end 
                     //of the data read 
-                    buffer[valread] = '\0';  
+                    //valread is  the number of values read
+                    for(int i = valread; i > 0; i--)
+                    {
+                        buffer[i] = buffer[i-1];
+                    }
+                    buffer[0] = to_string(sd)[0];
+                    buffer[valread+1] = '\0';
                     for (int i = 0; i < numConnected; i++)
                     {
-                        send(client_socket[i] , buffer , strlen(buffer) , 0 );  
+                        send(client_socket[i] , buffer, strlen(buffer) , 0 );  
                         //cout << "Message sent" << endl;
                     }
                     memset(buffer, 0, sizeof(buffer));

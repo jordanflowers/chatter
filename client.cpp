@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -31,7 +32,12 @@ void checkerThread()
             cout << "Server has quit the session" << endl;
             exit(0);
         }
-        cout << "Server: " << recvedMessage << endl;
+        cout << "Client " << recvedMessage[0] << ": ";
+        for(int i = 1; recvedMessage[i] != '\0'; i++)
+        {
+            cout << recvedMessage[i];
+        }
+        cout << endl;
     }
 }
 int main(int argc, char *argv[])
