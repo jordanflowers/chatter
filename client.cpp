@@ -14,8 +14,25 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <fstream>
+#include <thread>
 using namespace std;
 //Client side
+int clientSd;
+void checkerThread()
+{
+    char recvedMessage[1500];
+    while (1)
+    {
+        recv(clientSd, (char*)&recvedMessage, sizeof(recvedMessage), 0);
+        //cout << "Received from server..." << endl;
+        if(!strcmp(recvedMessage, "exit"))
+        {
+            cout << "Server has quit the session" << endl;
+            exit(0);
+        }
+        cout << "Server: " << recvedMessage << endl;
+    }
+}
 int main(int argc, char *argv[])
 {
     //we need 2 things: ip address and port number, in that order
@@ -34,16 +51,16 @@ int main(int argc, char *argv[])
     sendSockAddr.sin_addr.s_addr = 
         inet_addr(inet_ntoa(*(struct in_addr*)*host->h_addr_list));
     sendSockAddr.sin_port = htons(port);
-    int clientSd = socket(AF_INET, SOCK_STREAM, 0);
+    clientSd = socket(AF_INET, SOCK_STREAM, 0);
     //try to connect...
-    int status = connect(clientSd,
-                         (sockaddr*) &sendSockAddr, sizeof(sendSockAddr));
+    int status = connect(clientSd, (sockaddr*) &sendSockAddr, sizeof(sendSockAddr));
+
     if(status < 0)
     {
         cout<<"Error connecting to socket!"<<endl; //break;
     }
     cout << "Connected to the server!" << endl;
-    int bytesRead, bytesWritten = 0;
+    thread t1(checkerThread);
     struct timeval start1, end1;
     gettimeofday(&start1, NULL);
     while(1)
@@ -58,24 +75,13 @@ int main(int argc, char *argv[])
             send(clientSd, (char*)&msg, strlen(msg), 0);
             break;
         }
-        bytesWritten += send(clientSd, (char*)&msg, strlen(msg), 0);
-        cout << "Awaiting server response..." << endl;
+        send(clientSd, (char*)&msg, strlen(msg), 0);
+        //cout << "Awaiting server response..." << endl;
         memset(&msg, 0, sizeof(msg));//clear the buffer
-        bytesRead += recv(clientSd, (char*)&msg, sizeof(msg), 0);
-        if(!strcmp(msg, "exit"))
-        {
-            cout << "Server has quit the session" << endl;
-            break;
-        }
-        cout << "Server: " << msg << endl;
     }
+    t1.join();
     gettimeofday(&end1, NULL);
     close(clientSd);
-    cout << "********Session********" << endl;
-    cout << "Bytes written: " << bytesWritten << 
-    " Bytes read: " << bytesRead << endl;
-    cout << "Elapsed time: " << (end1.tv_sec- start1.tv_sec) 
-      << " secs" << endl;
     cout << "Connection closed" << endl;
     return 0;    
 }
