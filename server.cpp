@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
         cout << ">";
         string data;
 
-	str data = "temp response; continue";
+	data = "temp response; continue";
 
         memset(&msg, 0, sizeof(msg)); //clear the buffer
         strcpy(msg, data.c_str());
