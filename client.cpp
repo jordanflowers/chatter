@@ -12,7 +12,7 @@ using namespace std;
 
 // Global variable for the client socket descripter
 int clientSd;
-
+/*
 // Thread to check for server sending messages
 void checkerThread()
 {
@@ -40,7 +40,7 @@ void checkerThread()
         }
         cout << endl;
     }
-}
+}*/
 int main(int argc, char *argv[])
 {
     // Usage
@@ -74,10 +74,10 @@ int main(int argc, char *argv[])
     }
 
     cout << "Connected to the server!" << endl;
-
+/*
     // Spawn the thread to check for incoming messages from the server
     thread t1(checkerThread);
-    
+*/  
     // For sending messages
     while(1)
     {
@@ -96,9 +96,10 @@ int main(int argc, char *argv[])
         // Clear the buffer
         memset(&msg, 0, sizeof(msg));
     }
-
+/*
     // Join Thread
     t1.join();
+*/
     close(clientSd); // Close Socket
     cout << "Connection closed" << endl;
     return 0;    
