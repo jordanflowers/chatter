@@ -1,15 +1,15 @@
 //Example code: A simple server side code, which echos back the received message.
 //Handle multiple socket connections with select and fd_set on Linux 
 #include <iostream>
-#include <string.h>   //strlen 
+#include <string.h>         //strlen 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>   //close 
-#include <arpa/inet.h>    //close 
+#include <unistd.h>         //close 
+#include <arpa/inet.h>      //close 
 #include <sys/types.h> 
 #include <sys/socket.h> 
 #include <string>
-#include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros 
+#include <sys/time.h>       //FD_SET, FD_ISSET, FD_ZERO macros 
 using namespace std;    
 
 #define TRUE   1 
@@ -163,8 +163,8 @@ int main(int argc , char *argv[])
             {  
                 //Check if it was for closing , and also read the 
                 //incoming message 
-                if ((valread = read( sd , buffer, 1024)) == 0)  
-                {  
+                //if ((valread = read( sd , buffer, 1024)) == 0)  
+                //{  
                     //Somebody disconnected , get his details and print 
                     getpeername(sd , (struct sockaddr*)&address , \
                         (socklen_t*)&addrlen);  
@@ -174,10 +174,10 @@ int main(int argc , char *argv[])
                     //Close the socket and mark as 0 in list for reuse 
                     close( sd );  
                     client_socket[i] = 0;  
-                }  
+                //}  
                     
                 //Echo back the message that came in 
-                else
+                /*else
                 {  
                     //set the string terminating NULL byte on the end 
                     //of the data read 
@@ -193,7 +193,7 @@ int main(int argc , char *argv[])
                         send(client_socket[i] , buffer, strlen(buffer) , 0 );
                     }
                     memset(buffer, 0, sizeof(buffer));
-                }  
+                } */ 
             }  
         }  
     }  
