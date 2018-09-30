@@ -163,8 +163,8 @@ int main(int argc , char *argv[])
             {  
                 //Check if it was for closing , and also read the 
                 //incoming message 
-                //if ((valread = read( sd , buffer, 1024)) == 0)  
-                //{  
+                if ((valread = read( sd , buffer, 1024)) == 0)  
+                {  
                     //Somebody disconnected , get his details and print 
                     getpeername(sd , (struct sockaddr*)&address , \
                         (socklen_t*)&addrlen);  
@@ -174,10 +174,10 @@ int main(int argc , char *argv[])
                     //Close the socket and mark as 0 in list for reuse 
                     close( sd );  
                     client_socket[i] = 0;  
-                //}  
+                }  
                     
                 //Echo back the message that came in 
-                /*else
+                else
                 {  
                     //set the string terminating NULL byte on the end 
                     //of the data read 
@@ -193,7 +193,7 @@ int main(int argc , char *argv[])
                         send(client_socket[i] , buffer, strlen(buffer) , 0 );
                     }
                     memset(buffer, 0, sizeof(buffer));
-                } */ 
+                } 
             }  
         }  
     }  
